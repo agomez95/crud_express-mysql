@@ -2,7 +2,7 @@ const mysql = require('mysql');
 const { database } = require('./keys'); //importo solo la propiedad database
 const { promisify } = require('util'); //con este modulo node permite convertir codigo de callbacks a codigo de promesas
 
-const pool = mysql.createPool('database'); //con createPool es mucho mas cercano al entorno de produccion; 
+const pool = mysql.createPool(database); //con createPool es mucho mas cercano al entorno de produccion; 
                                            //lo que hace es tener un entorno de hilos que se van ejecutan cada uno y en secuencia para identificar fallos en produccion en el proceso de coneccion
 pool.getConnection((err,connection) =>{
     if(err) { //manejo de errores

@@ -32,7 +32,7 @@ app.use((req,res,next) => {
 //routes
 app.use(require('./routes/routes')); //rutas principales
 app.use(require('./routes/authentication')); //rutas auth
-app.use('/links', require('./routes/links')); //rutas de links como modulo
+app.use('/links', require('./routes/links')); //rutas de links como modulo y desde aqui sale la bd
 
 //public
 app.use(express.static(path.join(__dirname, 'public')));
