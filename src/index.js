@@ -2,6 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const exphbs = require('express-handlebars');
 const path = require('path');
+const flash = require('connect-flash');
+const session = require('express-session');
 
 //inicializador
 const app = express();
@@ -19,13 +21,17 @@ app.engine('.hbs', exphbs({ // configuro el handlebars y le pongo nombre '.hbs'
 app.set('view engine', '.hbs'); //con lo de arriba configure el motor y con esta linea va a funcionar
 
 //middlewares
+app.use(session({
+    
+}));
+app.use(flash());//middleware de connect-flash
 app.use(morgan('dev')); //con esto el servidor botara respuestas get, post, put, delete con colores y con mensajes de codigo de estado Http(200,404,etc.)
 app.use(express.urlencoded({extended: false})); //valido los datos que me envien desde los formularios y con extended solo recibire datos simples como strings
 app.use(express.json());//valido datos json
 
 //variables globales o funciones de continuidad para el codigo
 app.use((req,res,next) => {
-
+    app.locals.success = req.flash('succes'); //con esto declaramos la variable global de "success" que lo usaremos en el main layout
     next();
 });
 
