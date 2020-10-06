@@ -28,13 +28,13 @@ links.get('/', async (req,res) => {
 links.get('/delete/:id', async (req,res) => {
     const { id } = req.params;
     await pool.query('DELETE FROM links WHERE id = ?', [id]);
+    req.flash('succes', 'El link ha sido removido satisfactoriamente');
     res.redirect('/links');
 });
 
 links.get('/edit/:id', async (req,res) => {
     const { id } = req.params;
     const links = await pool.query('SELECT * FROM links WHERE id = ?', [id]);
-    //console.log(links[0]);
     res.render('links/edit', {link: links[0]});//links[0] recibo un unico objeto
 });
 
@@ -47,6 +47,7 @@ links.post('/edit/:id', async (req,res) => {
         url
     }
     await pool.query('UPDATE links set ? WHERE id = ?', [editLink, id]); //aqui mando el query mediante la promesa pero esta vez envio 2 objetos de la siguiente forma
+    req.flash('succes', 'El link ha sido actualizado satisfactoriamente');
     res.redirect('/links');
 });
 

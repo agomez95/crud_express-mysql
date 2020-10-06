@@ -4,6 +4,8 @@ const exphbs = require('express-handlebars');
 const path = require('path');
 const flash = require('connect-flash');
 const session = require('express-session');
+const MySQLStore = require('express-mysql-session');
+const { database } = require('./keys'); //con esto llamo la conexion a la base de datos 
 
 //inicializador
 const app = express();
@@ -22,7 +24,10 @@ app.set('view engine', '.hbs'); //con lo de arriba configure el motor y con esta
 
 //middlewares
 app.use(session({
-    
+    secret: 'nodemysqlsession', //aqui le damos el modelo de como va a guardar las sesiones, un nombre en pocas palabras
+    resave: false, //con false para que no se empieze a renovar la sesion por si sola
+    saveUninitialized: false, //false para que no se vuelva a establecer la sesion
+    store: new MySQLStore(database)//aqui es donde vamos a guardar la sesion y sera en la base de datos por medio del modulo "express-mysql" y la conexion "database"
 }));
 app.use(flash());//middleware de connect-flash
 app.use(morgan('dev')); //con esto el servidor botara respuestas get, post, put, delete con colores y con mensajes de codigo de estado Http(200,404,etc.)
