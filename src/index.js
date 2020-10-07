@@ -6,9 +6,11 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session');
 const { database } = require('./keys'); //con esto llamo la conexion a la base de datos 
+const passport = require('passport');
 
 //inicializador
 const app = express();
+require('./lib/passport'); //con esto la aplicacion se va a enterar que estoy creando una autenticacion y la utilice
 
 //settings
 app.set('port', process.env.PORT || 4000); //configuro el puerto por defecto o 4000
@@ -33,6 +35,8 @@ app.use(flash());//middleware de connect-flash
 app.use(morgan('dev')); //con esto el servidor botara respuestas get, post, put, delete con colores y con mensajes de codigo de estado Http(200,404,etc.)
 app.use(express.urlencoded({extended: false})); //valido los datos que me envien desde los formularios y con extended solo recibire datos simples como strings
 app.use(express.json());//valido datos json
+app.use(passport.initialize());//con esto inicializo passport
+app.use(passport.session());//con esto va a funcionar passport
 
 //variables globales o funciones de continuidad para el codigo
 app.use((req,res,next) => {
