@@ -4,7 +4,7 @@ const LocalStrategy = require('passport-local').Strategy; //con esto podre hacer
 const pool = require('../database');
 const helpers = require('../lib/helpers');
 
-//primer metodo de autenticacion
+//primer metodo de autenticacion de creacion
 passport.use('local.signup', new LocalStrategy({ //asi creo la autenticacion LOCAL; local.signup es el nombre de mi autenticacion y ese voy a usar en mi servidor(index)
     usernameField: 'username', //recibire de mi autenticacion local el nombre completo que se va a llamar "username" proveniente de mi formulario
     passwordField: 'password', //lo mismo que arriba pero esta vez como password
@@ -18,9 +18,26 @@ passport.use('local.signup', new LocalStrategy({ //asi creo la autenticacion LOC
     };
     newUser.password = await helpers.encryptPassword(password); //con esto cifro mi password para guardarla en la db pero debo usarla con await para que se tome su tiempo
     const result = await pool.query('INSERT INTO users SET ?', [newUser]); //mando mi funcion asyncrona con el pool query para insertar el usuario nuevo
+    newUser.id = result.insertId;
     return done(null, newUser);
 }));
 
-/*passport.serializeUser(() => {
+//cuando serializo guardo el id del usario y cuando deserializo tomo ese id para obtener los datos del usario
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+passport.deserializeUser(async (id, done) => {
+    const row = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
+    done(null, row[0]);
+});
 
-});*/
+//segundo metodo para autenticacion logeo
+passport.use('local.signin', new LocalStrategy({
+    usernameField: 'username',
+    passwordField: 'password',
+    passReqToCallback: true
+}, async (req, username, password, done) => {
+    console.log(req.body)
+    console.log(username)
+    console.log(password)
+}));

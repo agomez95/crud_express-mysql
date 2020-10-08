@@ -1,6 +1,8 @@
 const express = require('express');
 const auth = express.Router();
 const passport = require('passport');
+
+/*******************************************CREAR USUARIO*************************************************/
 auth.get('/signup', (req,res) =>{
     res.render('auth/signup'); //aqui renderizo la vista sign up
 });
@@ -13,7 +15,21 @@ auth.post('/signup', passport.authenticate('local.signup', { //con esto va a tom
 }));
 
 auth.get('/profile', (req,res) => {
-    res.send('se autentico');
+    res.send('bienvenido a tu perfil');
 });
+
+/*******************************************CREAR USUARIO*************************************************/
+auth.get('/signin', (req,res) =>{
+    res.render('auth/signin'); 
+});
+
+auth.post('/signin', (req,res,next) => {
+    passport.authenticate('local.signin', { 
+        successRedirect: '/profile', 
+        failureRedirect: '/signin',
+        failureFlash: true 
+    })(req,res,next)
+});
+
 
 module.exports = auth;
