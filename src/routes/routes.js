@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const { isLoggedIn } = require('../lib/helpers');
 
-router.get('/', (req,res) =>{
-    res.send('Holi');
+router.get('/',isLoggedIn, (req,res) =>{
+    res.render('/signin');
 });
 
 module.exports = router;

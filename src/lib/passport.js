@@ -42,7 +42,7 @@ passport.use('local.signin', new LocalStrategy({
         const user = rows[0]; //extraigo mi usuario
         const validPassword = await helpers.matchPassword(password, user.password); //uso mi libreria helper para comparar la contraseña que recibo y la del usuario proveniente de la db
         if(validPassword) {  //si es true..
-            done(null,user,req.flash('success','Bienvenido', user.username)); //termino el proceso mandando el null como error(como no hay error por eso envio null), el usuario para que lo serialice y deserialice y un mensaje flash
+            done(null,user,req.flash('success','Bienvenido!')); //termino el proceso mandando el null como error(como no hay error por eso envio null), el usuario para que lo serialice y deserialice y un mensaje flash
         }
         else {    
             done(null,false,req.flash('failure','El password es incorrecto')); //termino el proceso mandando el null como error(como no hay error por eso envio null), no le envio un usario en ves de eso le mando un false y un mensaje de fallo

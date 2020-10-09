@@ -42,6 +42,7 @@ app.use(passport.session());//con esto va a funcionar passport
 app.use((req,res,next) => {
     app.locals.success = req.flash('succes'); //con esto declaramos la variable global de "success" que lo usaremos en el main layout
     app.locals.failure = req.flash('failure'); //igual que success pero este mensaje es de fallo
+    app.locals.user = req.user; //vamos a almacenar en una variable global la sesion de usuario
     next();
 });
 

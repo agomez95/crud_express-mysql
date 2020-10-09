@@ -20,4 +20,18 @@ helpers.matchPassword = async (password, savePassword) => {
     }
 }
 
+helpers.isLoggedIn = function isLoggedIn(req,res,next) {
+    if(req.isAuthenticated()){
+        return next();
+    }
+    return res.redirect('/signin');
+}
+
+helpers.isNotLoggedIn = function isNotLoggedIn(req,res,next) {
+    if(!req.isAuthenticated()){
+        return next();
+    }
+    return res.redirect('/profile');
+}
+
 module.exports = helpers;

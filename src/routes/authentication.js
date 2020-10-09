@@ -1,9 +1,10 @@
 const express = require('express');
 const auth = express.Router();
 const passport = require('passport');
+const { isLoggedIn, isNotLoggedIn } = require('../lib/helpers');
 
 /*******************************************CREAR USUARIO*************************************************/
-auth.get('/signup', (req,res) =>{
+auth.get('/signup', isNotLoggedIn, (req,res) =>{
     res.render('auth/signup'); //aqui renderizo la vista sign up
 });
 
@@ -14,12 +15,12 @@ auth.post('/signup', passport.authenticate('local.signup', { //con esto va a tom
     failureFlash: true //con esto podemos definir mensajes flash si algo falla a traves de passport
 }));
 
-auth.get('/profile', (req,res) => {
-    res.send('bienvenido a tu perfil');
+auth.get('/profile', isLoggedIn, (req,res) => {
+    res.render('profile');
 });
 
-/*******************************************CREAR USUARIO*************************************************/
-auth.get('/signin', (req,res) =>{
+/*******************************************LOGIN USUARIO*************************************************/
+auth.get('/signin', isNotLoggedIn, (req,res) =>{
     res.render('auth/signin'); 
 });
 
@@ -31,5 +32,10 @@ auth.post('/signin', (req,res,next) => {
     })(req,res,next)
 });
 
+/*******************************************CERRAR SESION*************************************************/
+auth.get('/logout', (req,res) =>{
+    req.logOut(); //passport nos da un metodo de logout para cerrar sesion
+    res.redirect('/signin'); 
+});
 
 module.exports = auth;
