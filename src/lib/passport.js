@@ -22,7 +22,7 @@ passport.use('local.signup', new LocalStrategy({ //asi creo la autenticacion LOC
     return done(null, newUser);
 }));
 
-//cuando serializo guardo el id del usario y cuando deserializo tomo ese id para obtener los datos del usario
+//cuando serializo guardo el id del usario y cuando deserializo tomo ese id para obtener los datos del usario, funciona luego de crear o logear un usuario
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
@@ -37,7 +37,18 @@ passport.use('local.signin', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, async (req, username, password, done) => {
-    console.log(req.body)
-    console.log(username)
-    console.log(password)
+    const rows = await pool.query('SELECT * FROM users WHERE username = ?', [username]); //selecciono al usuario que busco
+    if(rows.length > 0) { //vamos a ver si mi consulta tiene multiples filas
+        const user = rows[0]; //extraigo mi usuario
+        const validPassword = await helpers.matchPassword(password, user.password); //uso mi libreria helper para comparar la contraseña que recibo y la del usuario proveniente de la db
+        if(validPassword) {  //si es true..
+            done(null,user,req.flash('success','Bienvenido', user.username)); //termino el proceso mandando el null como error(como no hay error por eso envio null), el usuario para que lo serialice y deserialice y un mensaje flash
+        }
+        else {    
+            done(null,false,req.flash('failure','El password es incorrecto')); //termino el proceso mandando el null como error(como no hay error por eso envio null), no le envio un usario en ves de eso le mando un false y un mensaje de fallo
+        }
+    }
+    else {
+        done(null,false,req.flash('failure','El usuario no existe'));//termino el proceso mandando el null como error(como no hay error por eso envio null), no le envio un usario en ves de eso le mando un false y un mensaje de fallo       
+    }
 }));

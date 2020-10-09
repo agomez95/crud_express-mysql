@@ -14,7 +14,7 @@ helpers.encryptPassword = async (password) => { //por ejemplo aqui hago un metod
 helpers.matchPassword = async (password, savePassword) => {
     //podria usar otro tipo de promises revisar luego...
     try {
-        await bcrypt.compare(password, savePassword); //aqui las comparo
+        return await bcrypt.compare(password, savePassword); //aqui las comparo y la retorno
     } catch(e) {
         console.log(e);
     }

@@ -41,6 +41,7 @@ app.use(passport.session());//con esto va a funcionar passport
 //variables globales o funciones de continuidad para el codigo
 app.use((req,res,next) => {
     app.locals.success = req.flash('succes'); //con esto declaramos la variable global de "success" que lo usaremos en el main layout
+    app.locals.failure = req.flash('failure'); //igual que success pero este mensaje es de fallo
     next();
 });
 
