@@ -7,12 +7,13 @@ links.get('/add',isLoggedIn, (req,res) => {
     res.render('links/add'); //aqui agregaremos los archivos links 
 });
 
-links.post('/add', async (req,res) => {
+links.post('/add',isLoggedIn, async (req,res) => {
     const { title, url, description } = req.body; //con esto recivo los datos del formuario a estos objetos que estoy creadno
     const newLink = { //en este objeto almaceno los 3 que recibi
         title,
         url,
-        description
+        description,
+        user_id: req.user.id
     }
     await pool.query('INSERT INTO links set?', [newLink]); //aqui mando el query mediante la promesa y el objeto a agregar
     req.flash('succes', 'El link ha sido guardado satisfactoriamente');
@@ -20,7 +21,7 @@ links.post('/add', async (req,res) => {
 });
 
 links.get('/',isLoggedIn, async (req,res) => {
-    const links = await pool.query('SELECT * FROM links'); //aqui mando un query para hacer un list de todos los links
+    const links = await pool.query('SELECT * FROM links WHERE user_id = ?', [req.user.id]); //aqui mando un query para hacer un list de todos los links
     //console.log(list);
     res.render('links/list', {links: links}); //renderizo la vista y envio el objeto links
 });
